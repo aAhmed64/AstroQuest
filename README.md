@@ -13,6 +13,8 @@
 7. [Contributors](#contributors)
 8. [License](#license)
 
+![Uploading image.png…]()
+
 ## Project Overview
 
 Astro Quest is designed to:
