@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>3D VR Solar System</title>
+    <link rel="icon" href="img/icon.png">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/modalStyle.css">
+    <script src="js/libaries/jquery-3.3.1.min.js"></script>
+    <script src="js/libaries/bootstrap.bundle.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $("#myModal").modal('show');
+        });
+
+
+
+
+// function moveToEntity(entity) {
+//     const camera = document.querySelector('a-camera');
+//     const targetPosition = entity.getAttribute('data-position');
+//     if (targetPosition) {
+//         const [x, y, z] = targetPosition.split(';').map(prop => prop.trim().split(':')[1].trim());
+//         camera.setAttribute('position', { x: parseFloat(x), y: parseFloat(y), z: parseFloat(z) - 5 });
+//         // Calculate the rotation to face the entity
+//         const rotation = {
+//             x: 0,
+//             y: 0,
+//             z: 0
+//         };
+//         if (parseFloat(x) > 0) {
+//             rotation.y = 180;
+//         } else if (parseFloat(x) < 0) {
+//             rotation.y = 0;
+//         }
+//         if (parseFloat(z) > 0) {
+//             rotation.x = -90;
+//         } else if (parseFloat(z) < 0) {
+//             rotation.x = 90;
+//         }
+//         camera.setAttribute('rotation', rotation);
+
+//         // Update the camera's position and rotation every frame
+//         function updateCamera() {
+//             // Get the planet's position and rotation
+//             const planet = document.querySelector('#' + entity.id);
+//             if (planet) {
+//                 const planetPosition = planet.getAttribute('position');
+//                 const planetRotation = planet.getAttribute('rotation');
+
+//                 // Update the camera's position and rotation
+//                 camera.setAttribute('position', planetPosition);
+//                 camera.setAttribute('rotation', planetRotation);
+//             }
+
+//             // Request the next frame
+//             requestAnimationFrame(updateCamera);
+//         }
+
+//         // Start the animation
+//         updateCamera();
+//     } else {
+//         console.error('Entity position not found:', entity);
+//     }
+// }
+
+// // Add an event listener to the entity to update the camera's position and rotation
+// document.addEventListener('DOMContentLoaded', function() {
+//     const entities = document.querySelectorAll('[data-entity-id]');
+//     entities.forEach(entity => {
+//         entity.addEventListener('click', function() {
+//             moveToEntity(entity);
+//         });
+//     });
+// });
+
+//     </script>
+
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+
+</head>
+
+<body>
+          
+
+
+    <div class="entity-list-wrapper">
+        <h2>Entities</h2>
+        <ul id="entity-list">
+          <li id="sun" data-entity-id="sun" data-position="x: -10; y: 5.25; z: -5">Sun</li>
+          <li id="mercury" data-entity-id="mercury" data-position="x: -18; y: 1.25; z: -5">Mercury</li>
+          <li id="venus" data-entity-id="venus" data-position="x: -16; y: 1.25; z: -5">Venus</li>
+          <li id="earth" data-entity-id="earth" data-position="x: -14; y: 1.25; z: -5">Earth</li>
+          <li id="mars" data-entity-id="mars" data-position="x: -12; y: 1.25; z: -5">Mars</li>
+          <li id="jupiter" data-entity-id="jupiter" data-position="x: -10; y: 1.25; z: -5">Jupiter</li>
+          <li id="saturn" data-entity-id="saturn" data-position="x: -8; y: 1.25; z: -5">Saturn</li>
+          <li id="uranus" data-entity-id="uranus" data-position="x: -6; y: 1.25; z: -5">Uranus</li>
+          <li id="neptune" data-entity-id="neptune" data-position="x: -4; y: 1.25; z: -5">Neptune</li>
+          <li id="2005 EU95" data-entity-id="2005 EU95" data-position="x: -2; y: 1.25; z: -5">2005 EU95</li>
+        </ul>
+    </div>
+          
+          
+    <a-scene vr-mode-ui="enabled: true">
+    
+            
+            
+        
+
+
+        <a-camera wasd-controls="acceleration: 300" look-controls gyro-enabled position="0 5 0" rotation="-90 0 0"></a-camera>            <img id="sunText" src="img/sun.jpg">
+            <img id="mercuryText" src="img/mercury.jpg">
+            <img id="venusText" src="img/venus_atmosphere.jpg">
+            <img id="earthText" src="img/earth.jpg">
+            <img id="earthCloudsText" src="img/earth_clouds.png">
+            <img id="marsText" src="img/mars.jpg">
+            <img id="jupiterText" src="img/jupiter.jpg">
+            <img id="saturnText" src="img/saturn.jpg">
+            <img id="saturnRingText" src="img/saturn.jpg">
+            <img id="uranusText" src="img/uranus.jpg">
+            <img id="neptuneText" src="img/neptune.jpg">
+            <img id="skyText" src="img/stars.jpg">
+            <img id="moonText" src="img/moon.jpg">
+        </a-assets>
+
+
+
+        <a-sky src="#skyText"></a-sky>
+        <a-light type="ambient" color="#222"></a-light>
+        <a-light type="spot" angle=180 color="#fff0da" intensity=1.5 position="-20 1.25 -5"></a-light>
+
+        <a-entity id="sun" geometry="primitive: sphere; radius:6;" position="-20 1.25 -5" material="shader: flat; src: #sunText" animation="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 200000">
+        </a-entity>
+
+        <a-entity position="-20 1.25 -5" rotation="0 20 0" animation="property: rotation; to: 0 380 0; easing: linear; loop: true; dur: 36000">
+            <a-entity id="mercury" geometry="primitive: sphere; radius:.1;" position="14 1.25 -5" material="src: #mercuryText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 18000">
+            </a-entity>
+        </a-entity>
+
+        <a-entity position="-20 1.25 -5" rotation="0 -80 0" animation="property: rotation; to: 0 280 0; easing: linear; loop: true; dur: 48000">
+            <a-entity id="venus" geometry="primitive: sphere; radius:.3;" position="16 1.25 -5" material="src: #venusText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 18000">
+            </a-entity>
+        </a-entity>
+
+        <a-entity id="earthOrbit" position="-20 1.25 -5" rotation="0 -20 0" 
+                animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 36000">
+            <a-entity id="earth" geometry="primitive: sphere; radius:.3;" position="18 0 0" 
+                    material="src: #earthText" 
+                    animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 18000">
+                <a-sphere transparent="true" radius=".3" src="#earthCloudsText"></a-sphere>
+
+                <!-- NEO orbiting the Earth -->
+                <a-entity id="moon" geometry="primitive: sphere; radius: 0.081;" position="1.5 0 0" 
+           material="src: #moonText" 
+           animation="property: position; to: 1.5 0 0; dir: alternate; dur: 4000; loop: true; easing: linear">
+           <a-entity position="-25 1.25 -5" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 40000">
+            <a-entity id="2005 EU95" geometry="primitive: sphere; radius: 0.5;" position="30 1.25 -5" material="src: #astreoid;" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 70000"></a-entity>
+        </a-entity>
+  <a-animation attribute="position" 
+                 from="1.5 0 0" to="-1.5 0 0" 
+                 dur="4000" 
+                 repeat="infinite" 
+                 direction="alternate">
+    <a-animation attribute="position" 
+                   from="-1.5 0 0" to="1.5 0 0" 
+                   dur="4000" 
+                   repeat="infinite" 
+                   direction="alternate">
+    </a-animation>
+  </a-animation>
+</a-entity>
+            </a-entity>
+        </a-entity>
+        </a-entity>
+
+        <a-entity position="-20 1.25 -5" rotation="0 -20 0" animation="property: rotation; to: 0 340 0; easing: linear; loop: true; dur: 48000">
+            <a-entity id="mars" geometry="primitive: sphere; radius:.15;" position="20 1.25 -5" material="src: #marsText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 18000">
+            </a-entity>
+        </a-entity>
+
+        <a-entity position="-20 1.25 -5" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 60000">
+            <a-entity id="jupiter" geometry="primitive: sphere; radius:1;" position="22 1.25 -5" material="src: #jupiterText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 20000" clickable>
+            </a-entity>
+        </a-entity>
+
+        <a-entity position="-20 1.25 -5" rotation="0 -100 0" animation="property: rotation; to: 0 260 0; easing: linear; loop: true; dur: 72000">
+            <a-entity id="saturn" geometry="primitive: sphere; radius:.7;" position="25 1.25 -5" material="src: #saturnText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 20000">
+                <a-cylinder transparent=true src="img/ring.png" height=".0001" radius="1.5" rotation="10 10 20" animation="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 20000"></a-cylinder>
+            </a-entity>
+        </a-entity>
+
+        <a-entity position="-20 1.25 -5" rotation="0 80 0" animation="property: rotation; to: 0 440 0; easing: linear; loop: true; dur: 84000">
+            <a-entity id="uranus" geometry="primitive: sphere; radius:.5;" position="27.5 1.25 -5" material="src: #uranusText" animation="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 20000">
+            </a-entity>
+        </a-entity>
+        
+        <a-entity position="-20 1.25 -5" rotation="0 -100 0" animation="property: rotation; to: 0 260 0; easing: linear; loop: true; dur: 96000">
+            <a-entity id="neptune" geometry="primitive: sphere; radius:.4;" position="29 1.25 -5" material="src: #neptuneText" animation="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 20000">
+            </a-entity>
+        </a-entity>
+
+        <a-assets>
+            <img id="neo1Text" src="img/neo.png">
+            <img id="astreoid" src="img/asteroid.jpg">
+            <img id="astreoid2" src="img/asteroid.jpg">
+            <img id="comet" src="img/comet.jpg">
+
+            <img id="neo" src="img/neo.png">
+        </a-assets>
+        
+        
+        <!-- NEO 1 -->
+        
+        
+        <!-- NEO 2 -->
+        
+
+        <a-entity position="-24 1.25 -5" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 40000">
+            <a-entity id="2024 RM46" geometry="primitive: sphere; radius: 0.9;" position="30 1.25 -5" material="src: #comet;" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 30000"></a-entity>
+        </a-entity>
+
+        <a-entity position="-20 1.25 -5" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 40000"></a-entity>
+            <a-entity id="2017 TB1" geometry="primitive: sphere; radius: 0.5;" position="30 1.25 -5" material="src: #astreoid2;" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 30000"></a-entity>
+        </a-entity>
+
+
+        <a-entity position="-30 1.25 -5" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 40000"></a-entity>
+            <a-entity id="2022 UF4" geometry="primitive: sphere; radius: 0.2;" position="30 1.25 -5" material="src: #comet;" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 30000"></a-entity>
+        </a-entity>
+
+        <a-entity position="-27 1.25 -5" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 40000"></a-entity>
+            <a-entity id="2024 RO2" geometry="primitive: sphere; radius: 0.2;" position="30 1.25 -5" material="src: #comet;" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 30000"></a-entity>
+        </a-entity>
+
+        <a-entity position="-22 1.25 -10" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 40000"></a-entity>
+            <a-entity id="2024 SS" geometry="primitive: sphere; radius: 0.2;" position="30 1.25 -5" material="src: #comet;" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 30000"></a-entity>
+        </a-entity>
+
+        <a-entity position="-35 1.25 -7" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 40000"></a-entity>
+            <a-entity id="2024 SV" geometry="primitive: sphere; radius: 0.2;" position="30 1.25 -5" material="src: #comet;" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 30000"></a-entity>
+        </a-entity>
+        
+
+        <a-entity position="-32 1.25 -6" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 40000"></a-entity>
+            <a-entity id="2008 TF" geometry="primitive: sphere; radius: 0.1;" position="30 1.25 -5" material="src: #astreoid;" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 30000"></a-entity>
+        </a-entity>
+
+        <a-entity position="-15 1.25 -5" rotation="0 0 0" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 40000"></a-entity>
+            <a-entity id="2015 YA" geometry="primitive: sphere; radius: 0.1;" position="30 1.25 -5" material="src: #astreoid;" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 30000"></a-entity>
+        </a-entity>
+
+        
+        
+        
+        
+
+        
+        
+        
+        
+
+    </a-scene>
+</body></html>
