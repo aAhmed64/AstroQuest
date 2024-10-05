@@ -1,7 +1,15 @@
+Here’s an improved version of your GitHub README for **Astro Quest**, incorporating the updated data and providing a clearer structure. I also included the link to your main website:
+
+---
 
 # Astro Quest
 
-**Astro Quest** is an innovative project developed for the NASA Space Apps Challenge, designed to solve real-world challenges by leveraging space and science technologies. Our aim is to explore and provide insights into space-related data, helping researchers, scientists, and the general public gain a deeper understanding of our universe.
+**Astro Quest** is an innovative project developed for the NASA Space Apps Challenge, aimed at solving real-world challenges by leveraging space science and technologies. This immersive VR simulation allows users to explore and gain insights into space-related data through interactive tools and educational resources, making space exploration accessible to both the general public and researchers.
+
+## Try It Out
+
+Experience Astro Quest live by visiting our website: [Astro Quest](https://asatan64.github.io/AstroQuest/)
+
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
@@ -12,49 +20,49 @@
 6. [Usage](#usage)
 7. [Contributors](#contributors)
 8. [License](#license)
+9. [Try It Out](#try-it-out)
 
-![Uploading image.png…]()
 
 ## Project Overview
 
 Astro Quest is designed to:
-- Analyze and visualize data from NASA's public API
-- Provide real-time information about space events, such as meteor showers and planetary positions
-- Enable users to explore the solar system through an interactive interface
-- Help identify and track celestial objects like asteroids and satellites
+- Analyze and visualize data from NASA's public API.
+- Provide real-time information about space events, such as meteor showers and planetary positions.
+- Enable users to explore the solar system through an interactive VR interface.
+- Help identify and track celestial objects like asteroids and satellites.
 
-The project brings space closer to the public by simplifying access to data and making space exploration engaging for everyone.
+By simplifying access to space data, Astro Quest brings the wonders of the universe closer to the public and makes space exploration engaging for everyone.
 
 ## Motivation
 
-The driving force behind Astro Quest is the passion for space and the desire to make space data accessible to everyone. The NASA Space Apps Challenge is the perfect platform to showcase how technology can be used to solve problems and contribute to scientific discovery.
+The driving force behind Astro Quest is our passion for space and the desire to make space data accessible to everyone. The NASA Space Apps Challenge provides a platform to showcase how technology can be utilized to solve problems and contribute to scientific discovery.
 
-Our goal is to:
-- Inspire curiosity about space
-- Assist researchers with advanced data analysis tools
-- Promote STEM education through interactive and fun learning experiences
+Our goals include:
+- Inspiring curiosity about space.
+- Assisting researchers with advanced data analysis tools.
+- Promoting STEM education through interactive and enjoyable learning experiences.
 
 ## Features
 
-- **Interactive Solar System Explorer**: Navigate through the solar system with 3D visualizations.
-- **Real-Time Space Events**: Stay updated with upcoming space events and news.
-- **Data Visualization**: Graphical representation of space data such as asteroid trajectories, space weather, etc.
-- **Search and Filter**: Easily search for and filter information about specific celestial objects.
-- **Educational Resources**: Learn about different planets, stars, and galaxies.
+- **Interactive VR Solar System Explorer**: Experience an immersive 3D visualization of the solar system, allowing users to navigate through celestial bodies.
+- **Real-Time Space Events**: Stay updated with upcoming space events, including meteor showers, eclipses, and satellite launches.
+- **Data Visualization**: Graphical representation of space data such as asteroid trajectories and space weather phenomena.
+- **Search and Filter**: Easily search for and filter information about specific celestial objects, enhancing the learning experience.
+- **Educational Resources**: Access comprehensive information about various planets, stars, galaxies, and their significance in our universe.
 
 ## Technology Stack
 
-- **Backend**: Python, Flask
 - **Frontend**: HTML, CSS, JavaScript, Three.js (for 3D visualizations)
+- **Backend**: Python, Flask
 - **APIs**: NASA APIs (NeoWs, Mars Rover Photos, etc.), SpaceWeather API
 - **Database**: SQLite (for data caching and storing user preferences)
-- **Others**: Tesseract OCR (for space-related document reading), Google Text-to-Speech
+- **Additional Tools**: Tesseract OCR (for space-related document reading), Google Text-to-Speech
 
 ## Installation Guide
 
 ### Prerequisites
 - Python 3.x
-- Flask
+- Bootstrap
 - Git
 - Any modern web browser
 
@@ -88,20 +96,20 @@ Our goal is to:
 ## Usage
 
 Once installed and running, you can:
-1. **Explore the Solar System**: Use the interactive 3D model to explore planets and their moons.
+1. **Explore the Solar System**: Navigate through the solar system using the interactive 3D model.
 2. **Check Space Events**: View upcoming meteor showers, eclipses, and satellite launches.
-3. **Search for Celestial Bodies**: Enter the name of an asteroid or planet to view detailed information.
+3. **Search for Celestial Bodies**: Enter the name of an asteroid or planet to access detailed information.
 4. **Learn**: Access educational resources about space phenomena, astronomy, and NASA missions.
 
 ## Contributors
 
-- Ahmed Mahmoud Gaballah - Lead Developer
-- Amr Bassem Farouk - Developer
-- Yassin Bassem Farouk- Researcher
-- Ali Mahmoud Shaddad-  Researcher
-- Abdelrahman - Researcher
+- **Ahmed Mahmoud Gaballah** - Lead Developer
+- **Amr Bassem Farouk** - Developer
+- **Yassin Bassem Farouk** - Researcher
+- **Ali Mahmoud Shaddad** - Researcher
+- **Abdelrahman** - Researcher
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
----
