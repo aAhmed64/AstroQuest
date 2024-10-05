@@ -2,433 +2,269 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>3D VR Solar System</title>
-  <link rel="icon" href="img/icon.png">
+    <meta charset="UTF-8">
+    <title>3D VR Solar System</title>
+    <link rel="icon" href="img/icon.png">
 
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
-
-  <script>
-    AFRAME.registerComponent('track-planet', {
-      schema: {
-        orbitalSpeed: { type: 'number', default: 1 }
-      },
-
-      init: function () {
-        this.camera = this.el.sceneEl.camera.el;
-        this.target = null;
-        this.isTransitioning = false;
-        this.planets = document.querySelectorAll('.planet');
-        this.initialOrbitDurations = {}; 
-
-        this.planets.forEach(planet => {
-          planet.addEventListener('click', this.onClick.bind(this));
-          planet.setAttribute('grabbable', '');
-          planet.setAttribute('hoverable', '');
-
-          this.initialOrbitDurations[planet.id] = planet.parentNode.getAttribute('animation__orbit').dur;
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/modalStyle.css">
+    <script src="js/libaries/jquery-3.3.1.min.js"></script>
+    <script src="js/libaries/bootstrap.bundle.js"></script>
+    <script src="https://localhost:443/js/script.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#myModal").modal('show');
         });
+    </script>
 
-        $("#entity-list li a").click(function (event) {
-          event.preventDefault();
-          var targetId = $(this).text().trim();
-          var targetPlanet = document.querySelector('#' + targetId);
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
 
-          if (targetPlanet) {
-            targetPlanet.dispatchEvent(new Event('click'));
-          }
-        });
-
-        this.initGUI();
-        this.updateOrbitDurations(); 
-      },
-
-      onClick: function (event) {
-        if (this.isTransitioning) return;
-
-        this.target = event.currentTarget;
-        this.isTransitioning = true;
-
-        let planetPosition = this.target.getAttribute('position');
-        let orbitalRadius = Math.sqrt(planetPosition.x ** 2 + planetPosition.z ** 2) + 2;
-
-        this.camera.setAttribute('animation', {
-          property: 'position',
-          to: {
-            x: planetPosition.x + orbitalRadius,
-            y: planetPosition.y + 1,
-            z: planetPosition.z
-          },
-          dur: 1000,
-          easing: 'easeInOutQuad',
-          from: this.camera.getAttribute('position')
-        });
-
-        this.camera.setAttribute('animation__lookat', {
-          property: 'rotation',
-          to: '0 0 0',
-          dur: 1000,
-          easing: 'easeInOutQuad'
-        });
-
-        this.initialCameraPosition = {
-          x: planetPosition.x + orbitalRadius,
-          y: planetPosition.y + 1,
-          z: planetPosition.z
-        };
-        this.startTime = Date.now();
-
-        setTimeout(() => {
-          this.isTransitioning = false;
-        }, 1000);
-      },
-
-      tick: function () {
-        if (this.target) {
-          this.camera.setAttribute('look-at', '#' + this.target.id);
-
-          let targetPosition = this.target.getAttribute('position');
-          let orbitalRadius = Math.sqrt(targetPosition.x ** 2 + targetPosition.z ** 2) + 2;
-
-          let elapsed = Date.now() - this.startTime;
-          let angle = this.orbitalSpeed * elapsed;
-
-          let x = this.initialCameraPosition.x + orbitalRadius * Math.sin(angle);
-          let z = this.initialCameraPosition.z + orbitalRadius * Math.cos(angle);
-
-          this.camera.setAttribute('position', {
-            x: x,
-            y: this.initialCameraPosition.y,
-            z: z
-          });
+    <style>
+        .entity-list-wrapper {
+            position: fixed;
+            top: 60px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            z-index: 10;
+            transition: opacity 0.3s ease-in-out;
+            display: flex; 
+            flex-wrap: wrap;
         }
 
-        this.updateOrbitDurations();
-      },
+        #entity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+        }
 
-      initGUI: function () {
-        const gui = new dat.GUI();
-        gui.domElement.id = 'gui';
-        gui.add(this.data, 'orbitalSpeed', 0.1, 10).name('Orbital Speed').listen()
-          .onChange(() => {
-            this.updateOrbitDurations();
-          });
-      },
+        #entity-list li {
+            margin: 5px;
+            width: calc(50% - 10px); 
+            box-sizing: border-box; 
+        }
 
-      updateOrbitDurations: function () {
-        this.planets.forEach(planet => {
-          const orbitAnimation = planet.parentNode.getAttribute('animation__orbit');
-          if (orbitAnimation) {
-            const newDur = this.initialOrbitDurations[planet.id] / this.data.orbitalSpeed;
-            planet.parentNode.setAttribute('animation__orbit', 'dur', newDur); 
-          }
-        });
-      }
-    });
-  </script>
+        #entity-list a {
+            color: white;
+            text-decoration: none;
+        }
 
-  <style>
-    .orbit-path {
-      geometry: primitive: torus;
-      radius: 1;
-      radiusTubular: 0.01;
-      segmentsTubular: 100;
-      material: color: white;
-      visible: false;
-    }
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100; 
+        }
 
-    /* Entity List Styling */
-    .entity-list-wrapper {
-      position: fixed;
-      top: 60px; 
-      left: 10px;
-      width: 200px;
-      background-color: rgba(0, 0, 0, 0.5); 
-      padding: 10px;
-      color: white;
-      z-index: 100; 
-    }
+        #slider-gui {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            z-index: 10;
+        }
 
-    #entity-list li {
-      margin-bottom: 5px;
-    }
+        #speedSlider {
+            -webkit-appearance: none; 
+            width: 150px;
+            height: 10px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
 
-    #entity-list a {
-      color: white;
-      text-decoration: none;
-    }
+        #speedSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #4CAF50;
+            cursor: pointer;
+        }
 
-    /* Button Styling */
-    button {
-      position: fixed;
-      top: 10px;
-      padding: 10px 20px;
-      background-color: rgba(0, 0, 0, 0.5); 
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 100;
-    }
+        #speedSlider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #4CAF50;
+            cursor: pointer;
+        }
 
-    #toggleOrbitsBtn {
-      left: 230px;
-    }
+        .entity-list-wrapper.hidden {
+            opacity: 0; 
+            pointer-events: none; 
+        }
 
-    /* Slider Styling */
-    .slider-wrapper {
-      position: fixed; 
-      top: 10px;
-      left: 410px; 
-      z-index: 100; 
-      color: white; 
-    }
-
-    #speedSlider {
-      width: 200px; 
-    }
-
-    /* Improved GUI Styling */
-    #gui {
-      position: fixed; 
-      top: 10px;
-      left: 10px;
-      z-index: 100; 
-      background-color: rgba(0, 0, 0, 0.8); 
-      color: #ffffff; 
-      font-family: sans-serif;
-      border: 2px solid #666666;
-      border-radius: 5px;
-    }
-
-    #gui .property-name {
-      color: #ffff00; 
-    }
-
-    #gui .c input[type=text],
-    #gui .c input[type=number],
-    #gui .c select {
-      background-color: #111111;
-      color: #eeeeee; 
-      border: 1px solid #333333; 
-    }
-
-    #gui .slider-fg { 
-      background-color: #00ffff;
-    }
-  </style>
+        #nova-toggle {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+            
+            cursor: pointer;
+            z-index: 11; 
+        }
+    </style>
 </head>
 
 <body>
-  <div id="gui"></div>
-  <div class="entity-list-wrapper">
-    <h2>Entities</h2>
-    <ul id="entity-list">
-      <li><a href="#">Sun</a></li>
-      <li><a href="#">Mercury</a></li>
-      <li><a href="#">Venus</a></li>
-      <li><a href="#">Earth</a></li>
-      <li><a href="#">Mars</a></li>
-      <li><a href="#">Jupiter</a></li>
-      <li><a href="#">Saturn</a></li>
-      <li><a href="#">Uranus</a></li>
-      <li><a href="#">Neptune</a></li>
-      <li><a href="#">2005 EU95</a></li>
-      <li><a href="#">2017 TB1</a></li>
-      <li><a href="#">2022 UF4</a></li>
-      <li><a href="#">2024 RO2</a></li>
-    </ul>
-  </div>
 
-  <button id="toggleOrbitsBtn">Show/Hide Orbits</button>
-  <div class="slider-wrapper">
-    <label for="speedSlider">Orbit Speed:</label>
-    <input type="range" id="speedSlider" min="1" max="10" value="5" step="1">
-  </div>
+    <img id="nova-toggle" src="img/nova.png" alt="Nova Toggle"> 
 
-  <a-scene vr-mode-ui="enabled: true">
-    <a-assets>
-      <img id="sunText" src="img/sun.jpg">
-      <img id="mercuryText" src="img/mercury.jpg">
-      <img id="venusText" src="img/venus_atmosphere.jpg">
-      <img id="earthText" src="img/earth.jpg">
-      <img id="earthCloudsText" src="img/earth_clouds.png">
-      <img id="marsText" src="img/mars.jpg">
-      <img id="jupiterText" src="img/jupiter.jpg">
-      <img id="saturnText" src="img/saturn.jpg">
-      <img id="saturnRingText" src="img/saturn.jpg">
-      <img id="uranusText" src="img/uranus.jpg">
-      <img id="neptuneText" src="img/neptune.jpg">
-      <img id="skyText" src="img/stars.jpg">
-      <img id="moonText" src="img/moon.jpg">
-      <img id="astreoid" src="img/asteroid.jpg">
-      <img id="comet" src="img/comet.jpg">
-    </a-assets>
+    <div class="entity-list-wrapper hidden">
+        
+        <ul id="entity-list">
+            <li><a href="https://en.wikipedia.org/wiki/Sun" target="_blank">Sun</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Mercury_(planet)" target="_blank">Mercury</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Venus" target="_blank">Venus</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Earth" target="_blank">Earth</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Mars" target="_blank">Mars</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Jupiter" target="_blank">Jupiter</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Saturn" target="_blank">Saturn</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Uranus" target="_blank">Uranus</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Neptune" target="_blank">Neptune</a></li>
+        </ul>
+    </div>
 
-    <a-entity track-planet>
-      <a-camera wasd-controls="acceleration: 300" look-controls="gyroEnabled: true" position="0 5 0"
-        rotation="-90 0 0"></a-camera>
-    </a-entity>
+    <div id="slider-gui">
+        <label for="speedSlider">Orbit Speed:</label>
+        <input type="range" id="speedSlider" min="0.1" max="2" value="1" step="0.1" orient="vertical"> 
+    </div>
 
-    <a-sky src="#skyText"></a-sky>
-    <a-light type="ambient" color="#222"></a-light>
-    <a-light type="spot" angle="180" color="#fff0da" intensity="1.5" position="-20 1.25 -5"></a-light>
+    <div id="loading-screen">
+        <h1>Loading...</h1>
+    </div>
 
-    <a-entity id="Sun" class="planet" geometry="primitive: sphere; radius:6;" position="-20 1.25 -5"
-      material="shader: flat; src: #sunText"
-      animation__rotate="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 250000">
-    </a-entity>
+    <a-scene vr-mode-ui="enabled: true" loading-screen="enabled: false;"> 
+        <a-assets>
+            <img id="sunText" src="img/sun.jpg">
+            <img id="mercuryText" src="img/mercury.jpg">
+            <img id="venusText" src="img/venus_atmosphere.jpg">
+            <img id="earthText" src="img/earth.jpg">
+            <img id="earthCloudsText" src="img/earth_clouds.png">
+            <img id="marsText" src="img/mars.jpg">
+            <img id="jupiterText" src="img/jupiter.jpg">
+            <img id="saturnText" src="img/saturn.jpg">
+            <img id="saturnRingText" src="img/saturn_ring.png"> 
+            <img id="uranusText" src="img/uranus.jpg">
+            <img id="neptuneText" src="img/neptune.jpg">
+            <img id="skyText" src="img/stars.jpg">
+            <img id="moonText" src="img/moon.jpg">
+            <img id="neo1Text" src="img/neo.png">
+            <img id="astreoid" src="img/asteroid.jpg">
+            <img id="comet" src="img/comet.jpg">
+            <img id="neo" src="img/neo.png">
+        </a-assets>
 
-    <!-- Mercury -->
-    <a-entity position="-20 1.25 -5" rotation="0 20 0" 
-              animation__orbit="property: rotation; to: 0 380 0; easing: linear; loop: true; dur: 88000">
-      <a-entity id="Mercury" class="planet" geometry="primitive: sphere; radius:.1;" position="8 1.25 -5"
-        material="src: #mercuryText"
-        animation__rotate="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 59000">
-      </a-entity>
-      <a-entity class="orbit-path" radius="8"></a-entity>
-    </a-entity>
-
-    <!-- Venus -->
-    <a-entity position="-20 1.25 -5" rotation="0 -80 0" 
-              animation__orbit="property: rotation; to: 0 280 0; easing: linear; loop: true; dur: 225000">
-      <a-entity id="Venus" class="planet" geometry="primitive: sphere; radius:.3;" position="11 1.25 -5"
-        material="src: #venusText"
-        animation__rotate="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 243000">
-      </a-entity>
-      <a-entity class="orbit-path" radius="11"></a-entity>
-    </a-entity>
-
-    <!-- Earth  -->
-    <a-entity id="earthOrbit" position="-20 1.25 -5" rotation="0 -20 0" 
-              animation__orbit="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 365000">
-      <a-entity id="Earth" class="planet" geometry="primitive: sphere; radius:.3;" position="14 0 0"
-        material="src: #earthText"
-        animation__rotate="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 1000">
-        <a-sphere transparent="true" radius=".3" src="#earthCloudsText"></a-sphere>
-        <a-entity id="moon" class="planet" geometry="primitive: sphere; radius: 0.081;" position="1.5 0 0"
-          material="src: #moonText"
-          animation__orbit="property: position; to: 1.5 0 0; dir: alternate; dur: 27000; loop: true; easing: linear">
+        <a-entity 
+            camera 
+            look-controls="gyroEnabled: true" 
+            wasd-controls="acceleration: 300" 
+            position="0 5 0" 
+            rotation="-90 0 0"
+            teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; startEvents: teleportstart; endEvents: teleportend; curveShootingSpeed: 10"
+        >
+            <a-entity id="head" position="0 1.6 0"></a-entity>
+            <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .teleportable" line="color: #FF00FF; opacity: 0.5"></a-entity>
+            <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .teleportable" line="color: #00FFFF; opacity: 0.5"></a-entity>
         </a-entity>
-      </a-entity>
-      <a-entity class="orbit-path" radius="14"></a-entity>
-    </a-entity>
+        <a-entity id="cameraRig"></a-entity>
 
-    <!-- Mars  -->
-    <a-entity position="-20 1.25 -5" rotation="0 -20 0" 
-              animation__orbit="property: rotation; to: 0 340 0; easing: linear; loop: true; dur: 687000">
-      <a-entity id="Mars" class="planet" geometry="primitive: sphere; radius:.15;" position="17 1.25 -5"
-        material="src: #marsText"
-        animation__rotate="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 1050">
-      </a-entity>
-      <a-entity class="orbit-path" radius="17"></a-entity>
-    </a-entity>
+        <a-sky src="#skyText"></a-sky>
+        <a-light type="ambient" color="#222"></a-light>
+        <a-light type="spot" angle="180" color="#fff0da" intensity="1.5" position="-20 1.25 -5"></a-light>
 
-    <!-- Jupiter  -->
-    <a-entity position="-20 1.25 -5" rotation="0 0 0" 
-              animation__orbit="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 4333000">
-      <a-entity id="Jupiter" class="planet" geometry="primitive: sphere; radius:1;" position="22 1.25 -5"
-        material="src: #jupiterText"
-        animation__rotate="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 4000">
-      </a-entity>
-      <a-entity class="orbit-path" radius="22"></a-entity>
-    </a-entity>
+        <!-- Sun -->
+        <a-entity id="sun" geometry="primitive: sphere; radius:6;" position="-20 1.25 -5" material="shader: flat; src: #sunText" animation="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 200000" class="teleportable"></a-entity>
 
-    <!-- Saturn  -->
-    <a-entity position="-20 1.25 -5" rotation="0 -100 0" 
-              animation__orbit="property: rotation; to: 0 260 0; easing: linear; loop: true; dur: 10759000">
-      <a-entity id="Saturn" class="planet" geometry="primitive: sphere; radius:.7;" position="28 1.25 -5"
-        material="src: #saturnText"
-        animation__rotate="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 4250">
-        <a-cylinder transparent="true" src="img/ring.png" height=".0001" radius="1.5" rotation="10 10 20"
-          animation__rotate="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 4000">
-        </a-cylinder>
-      </a-entity>
-      <a-entity class="orbit-path" radius="28"></a-entity>
-    </a-entity>
+        <!-- Mercury -->
+        <a-entity id="mercuryOrbit" position="-20 1.25 -5" rotation="0 20 0" animation__orbit="property: rotation; to: 0 380 0; easing: linear; loop: true; dur: 36000">
+            <a-entity id="mercury" geometry="primitive: sphere; radius:.1;" position="14 1.25 -5" material="src: #mercuryText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 18000" class="teleportable"></a-entity>
+        </a-entity>
 
-    <!-- Uranus  -->
-    <a-entity position="-20 1.25 -5" rotation="0 80 0" 
-              animation__orbit="property: rotation; to: 0 440 0; easing: linear; loop: true; dur: 30687000">
-      <a-entity id="Uranus" class="planet" geometry="primitive: sphere; radius:.5;" position="33 1.25 -5"
-        material="src: #uranusText"
-        animation__rotate="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 6500">
-      </a-entity>
-      <a-entity class="orbit-path" radius="33"></a-entity>
-    </a-entity>
+        <!-- Venus -->
+        <a-entity id="venusOrbit" position="-20 1.25 -5" rotation="0 -80 0" animation__orbit="property: rotation; to: 0 280 0; easing: linear; loop: true; dur: 48000">
+            <a-entity id="venus" geometry="primitive: sphere; radius:.3;" position="16 1.25 -5" material="src: #venusText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 18000" class="teleportable"></a-entity>
+        </a-entity>
 
-    <!-- Neptune  -->
-    <a-entity position="-20 1.25 -5" rotation="0 -100 0" 
-              animation__orbit="property: rotation; to: 0 260 0; easing: linear; loop: true; dur: 60190000">
-      <a-entity id="Neptune" class="planet" geometry="primitive: sphere; radius:.4;" position="37 1.25 -5"
-        material="src: #neptuneText"
-        animation__rotate="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 5800">
-      </a-entity>
-      <a-entity class="orbit-path" radius="37"></a-entity>
-    </a-entity>
+        <!-- Earth and Moon -->
+        <a-entity id="earthOrbit" position="-20 1.25 -5" rotation="0 -20 0" animation__orbit="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 60000">
+            <a-entity id="earth" geometry="primitive: sphere; radius:.3;" position="18 0 0" material="src: #earthText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 18000" class="teleportable">
+                <a-sphere transparent="true" radius=".3" src="#earthCloudsText"></a-sphere>
+                <a-entity id="moon" geometry="primitive: sphere; radius: 0.081;" position="1.5 0 0" material="src: #moonText" animation="property: position; to: 1.5 0 0; dir: alternate; dur: 4000; loop: true; easing: linear" class="teleportable"></a-entity>
+            </a-entity>
+        </a-entity>
 
-    <!-- Asteroids and Comets -->
-    <a-entity position="-29 1.25 -10" rotation="0 0 0" 
-              animation__orbit="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 1000000">
-      <a-entity id="2005 EU95" class="planet" geometry="primitive: sphere; radius: 0.2;" position="40 1.25 -5" 
-        material="src: #astreoid"
-        animation__rotate="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 20000">
-      </a-entity>
-      <a-entity class="orbit-path" radius="40"></a-entity>
-    </a-entity>
-    <a-entity position="-35 1.25 -5" rotation="0 0 0" 
-              animation__orbit="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 1200000">
-      <a-entity id="2017 TB1" class="planet" geometry="primitive: sphere; radius: 0.2;" position="43 1.25 -5" 
-        material="src: #astreoid"
-        animation__rotate="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 15000">
-      </a-entity>
-      <a-entity class="orbit-path" radius="43"></a-entity>
-    </a-entity>
-    <a-entity position="-30 1.25 -5" rotation="0 0 0" 
-              animation__orbit="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 800000">
-      <a-entity id="2022 UF4" class="planet" geometry="primitive: sphere; radius: 0.05;" position="46 1.25 -5" 
-        material="src: #comet"
-        animation__rotate="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 23000">
-      </a-entity>
-      <a-entity class="orbit-path" radius="46"></a-entity>
-    </a-entity>
-    <a-entity position="-27 1.25 -5" rotation="0 0 0" 
-              animation__orbit="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 900000">
-      <a-entity id="2024 RO2" class="planet" geometry="primitive: sphere; radius: 0.3;" position="49 1.25 -5" 
-        material="src: #comet"
-        animation__rotate="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 18000">
-      </a-entity>
-      <a-entity class="orbit-path" radius="49"></a-entity>
-    </a-entity>
-  </a-scene>
+        <!-- Mars -->
+        <a-entity id="marsOrbit" position="-20 1.25 -5" rotation="0 -20 0" animation__orbit="property: rotation; to: 0 340 0; easing: linear; loop: true; dur: 72000">
+            <a-entity id="mars" geometry="primitive: sphere; radius:.15;" position="20 1.25 -5" material="src: #marsText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 18000" class="teleportable"></a-entity>
+        </a-entity>
 
-  <script>
-    document.getElementById('toggleOrbitsBtn').addEventListener('click', function () {
-      const orbitPaths = document.querySelectorAll('.orbit-path');
-      let visible = orbitPaths[0].getAttribute('visible'); 
-      visible = !visible;
+        <!-- Jupiter -->
+        <a-entity id="jupiterOrbit" position="-20 1.25 -5" rotation="0 0 0" animation__orbit="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 108000">
+            <a-entity id="jupiter" geometry="primitive: sphere; radius:1;" position="22 1.25 -5" material="src: #jupiterText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 20000" class="teleportable"></a-entity>
+        </a-entity>
 
-      orbitPaths.forEach(path => {
-        path.setAttribute('visible', visible); 
-      });
-    });
+        <!-- Saturn -->
+        <a-entity id="saturnOrbit" position="-20 1.25 -5" rotation="0 -100 0" animation__orbit="property: rotation; to: 0 260 0; easing: linear; loop: true; dur: 144000">
+            <a-entity id="saturn" geometry="primitive: sphere; radius:.7;" position="25 1.25 -5" material="src: #saturnText" animation="property: rotation; to: 0 360 0; easing: linear; loop: true; dur: 20000" class="teleportable">
+                <a-cylinder transparent="true" src="#saturnRingText" height=".0001" radius="1.5" rotation="10 10 20" animation="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 20000"></a-cylinder>
+            </a-entity>
+        </a-entity>
 
-    const planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', '2005 EU95', '2017 TB1', '2022 UF4', '2024 RO2'];
+        <!-- Uranus -->
+        <a-entity id="uranusOrbit" position="-20 1.25 -5" rotation="0 80 0" animation__orbit="property: rotation; to: 0 440 0; easing: linear; loop: true; dur: 180000">
+            <a-entity id="uranus" geometry="primitive: sphere; radius:.5;" position="27.5 1.25 -5" material="src: #uranusText" animation="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 20000" class="teleportable"></a-entity>
+        </a-entity>
 
-    document.getElementById('speedSlider').addEventListener('input', function (event) {
-      const speedMultiplier = event.target.value;
+        <!-- Neptune -->
+        <a-entity id="neptuneOrbit" position="-20 1.25 -5" rotation="0 -100 0" animation__orbit="property: rotation; to: 0 260 0; easing: linear; loop: true; dur: 216000">
+            <a-entity id="neptune" geometry="primitive: sphere; radius:.4;" position="29 1.25 -5" material="src: #neptuneText" animation="property: rotation; to: 0 -360 0; easing: linear; loop: true; dur: 20000" class="teleportable"></a-entity>
+        </a-entity>
+    </a-scene>
 
-      planets.forEach(planet => {
-        const planetEl = document.getElementById(planet).parentNode;
-        const originalDuration = parseInt(planetEl.getAttribute('animation__orbit').dur);
-        planetEl.setAttribute('animation__orbit', `dur: ${originalDuration / speedMultiplier}`);
-      });
-    });
+    <script>
+        const speedSlider = document.getElementById('speedSlider');
+        const orbitAnimations = document.querySelectorAll('[animation__orbit]'); 
+        const loadingScreen = document.getElementById('loading-screen');
+        const novaToggle = document.getElementById('nova-toggle');
+        const entityListWrapper = document.querySelector('.entity-list-wrapper');
 
-  </script>
+        speedSlider.addEventListener('input', () => {
+            const speedFactor = speedSlider.value;
+
+            orbitAnimations.forEach(animation => {
+                const originalDuration = parseFloat(animation.getAttribute('animation__orbit').dur);
+                const newDuration = originalDuration / speedFactor; 
+                animation.setAttribute('animation__orbit', 'dur', newDuration);
+            });
+        });
+
+        window.addEventListener('load', () => {
+            loadingScreen.style.display = 'none';
+        });
+
+        novaToggle.addEventListener('click', () => {
+            entityListWrapper.classList.toggle('hidden'); 
+        });
+    </script>
 </body>
 
 </html>
