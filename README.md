@@ -1,7 +1,3 @@
-Here’s an improved version of your GitHub README for **Astro Quest**, incorporating the updated data and providing a clearer structure. I also included the link to your main website:
-
----
-
 # Astro Quest
 
 **Astro Quest** is an innovative project developed for the NASA Space Apps Challenge, aimed at solving real-world challenges by leveraging space science and technologies. This immersive VR simulation allows users to explore and gain insights into space-related data through interactive tools and educational resources, making space exploration accessible to both the general public and researchers.
