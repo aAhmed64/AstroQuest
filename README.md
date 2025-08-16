@@ -2,11 +2,10 @@
 
 **Astro Quest** is an innovative project developed for the NASA Space Apps Challenge, aimed at solving real-world challenges by leveraging space science and technologies. This immersive VR simulation allows users to explore and gain insights into space-related data through interactive tools and educational resources, making space exploration accessible to both the general public and researchers.
 
-![Uploading image.png…]()
 
 ## Try It Out
 
-Experience Astro Quest live by visiting our website: [Astro Quest](https://asatan64.github.io/AstroQuest/)
+Experience Astro Quest live by visiting our website: [Astro Quest](https://aahmed64.github.io/AstroQuest/)
 
 
 ## Table of Contents
@@ -110,4 +109,5 @@ Once installed and running, you can:
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
 
